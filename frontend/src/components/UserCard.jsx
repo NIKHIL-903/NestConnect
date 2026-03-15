@@ -7,10 +7,11 @@ const UserCard = ({ user }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="card text-center flex-col items-center gap-1">
+    <div className="card text-center flex-col items-center gap-1 user-card">
       <img
         src={user.profileImage || profilePlaceholder}
         alt={user.name}
+        className="user-card-avatar"
         style={{
           width: '64px', height: '64px', borderRadius: '50%',
           objectFit: 'cover', margin: '0 auto 0.5rem', display: 'block'

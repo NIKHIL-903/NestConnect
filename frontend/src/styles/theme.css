@@ -19,6 +19,8 @@ body {
   color: var(--text-color);
   font-family: var(--font-family);
   line-height: 1.5;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
 a {
@@ -31,6 +33,7 @@ a {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  width: 100%;
 }
 
 .card {
@@ -132,6 +135,7 @@ a {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .nav-actions {
@@ -155,11 +159,16 @@ a {
   max-width: 600px;
   margin: 0 auto;
   padding: 2rem 0;
+  width: 100%;
 }
 
 .dashboard-wrapper {
   max-width: 900px;
   margin: 0 auto;
+}
+
+.dashboard-filter-card {
+  flex-wrap: wrap;
 }
 
 .tabs {
@@ -184,4 +193,133 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
+}
+
+.user-card {
+  width: 100%;
+}
+
+.profile-header {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.profile-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.profile-org-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  text-align: right;
+  max-width: 280px;
+}
+
+.profile-org-badges {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.profile-residence-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .navbar {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .navbar-brand,
+  .nav-actions {
+    justify-self: center;
+  }
+
+  .nav-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 1rem 0;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .profile-heading-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-org-summary {
+    align-items: flex-start;
+    text-align: left;
+    max-width: 100%;
+  }
+
+  .profile-org-badges {
+    justify-content: flex-start;
+  }
+
+  .profile-residence-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-filter-card {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .profile-avatar {
+    width: 84px !important;
+    height: 84px !important;
+  }
+
+  .user-card-avatar {
+    width: 56px !important;
+    height: 56px !important;
+  }
 }

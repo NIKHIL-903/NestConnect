@@ -50,7 +50,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="card mb-4" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div className="card mb-4 dashboard-filter-card" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <div style={{ flex: 1 }}>
           <DomainSelector 
             multiple={false} 

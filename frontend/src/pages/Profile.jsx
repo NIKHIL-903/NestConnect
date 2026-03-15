@@ -59,10 +59,11 @@ const Profile = () => {
   return (
     <div className="page-wrapper" style={{ maxWidth: '800px' }}>
       <div className="card">
-        <div className="flex gap-4 items-center mb-4 pb-4" style={{ borderBottom: '1px solid #333' }}>
+        <div className="profile-header mb-4 pb-4" style={{ borderBottom: '1px solid #333' }}>
           <img
             src={user.profileImage || profilePlaceholder}
             alt={user.name}
+            className="profile-avatar"
             style={{
               width: '100px',
               height: '100px',
@@ -71,14 +72,14 @@ const Profile = () => {
               flexShrink: 0
             }}
           />
-          <div style={{ flex: 1 }}>
-            <div className="flex justify-between items-start">
-              <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="profile-heading-row">
+              <div style={{ minWidth: 0 }}>
                 <h2 style={{ fontSize: '2rem', marginBottom: '0.25rem', marginTop: 0 }}>{user.name}</h2>
                 <p className="text-muted" style={{ fontSize: '1.1rem', margin: 0 }}>{user.occupation}</p>
               </div>
-              <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem' }}>
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <div className="profile-org-summary">
+                <div className="profile-org-badges">
                   <span style={{ 
                     background: 'rgba(255, 122, 0, 0.1)', 
                     color: 'var(--primary-accent)', 
@@ -99,15 +100,6 @@ const Profile = () => {
                     {user.org?.orgName || 'N/A'}
                   </span>
                 </div>
-                <span style={{ 
-                    background: '#333', 
-                    color: '#fff', 
-                    padding: '4px 12px', 
-                    borderRadius: '16px',
-                    fontSize: '0.85rem'
-                  }}>
-                    {user.org?.city || 'N/A'}
-                  </span>
                 {user.org?.description && (
                   <p className="text-sm text-muted mt-1" style={{ margin: 0 }}>{user.org.description}</p>
                 )}
@@ -130,7 +122,7 @@ const Profile = () => {
 
         <div className="mb-4 p-4" style={{ background: 'var(--bg-color)', borderRadius: '8px' }}>
           <h3 className="mb-2" style={{ fontSize: '1.1rem' }}>Residence Details</h3>
-          <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+          <div className="grid profile-residence-grid" style={{ gap: '1rem' }}>
             <div>
               <p className="text-sm text-muted mb-1" style={{ margin: 0 }}>Block / Tower / Road No</p>
               <p style={{ margin: 0, fontWeight: '500' }}>{user.block || 'N/A'}</p>
