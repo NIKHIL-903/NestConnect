@@ -70,16 +70,18 @@ export const getConnections = asyncHandler(async (req, res) => {
 });
 
 /**
- * Get pending connection requests received by user
+ * Get all pending connection requests for user
  */
 export const getConnectionRequests = asyncHandler(async (req, res) => {
     const requests = await Connection.find({
-        receiverId: req.user._id,
+        $or: [{ senderId: req.user._id }, { receiverId: req.user._id }],
         status: "pending"
-    }).populate("senderId", "name userId profileImage occupation bio");
+    })
+        .populate("senderId", "name userId profileImage occupation bio")
+        .populate("receiverId", "name userId profileImage occupation bio");
 
     return res.status(200).json(
-        new ApiResponse(200, requests, "Connection requests fetched successfully")
+        new ApiResponse(200, requests, "Pending connection requests fetched successfully")
     );
 });
 

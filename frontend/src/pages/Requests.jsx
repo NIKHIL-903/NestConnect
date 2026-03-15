@@ -11,15 +11,21 @@ const Requests = () => {
   const [requests, setRequests] = useState([]);
   const [connections, setConnections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const incomingRequests = requests.filter((req) => req.receiverId?._id === user?._id);
+  const sentRequests = requests.filter((req) => req.senderId?._id === user?._id);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setError('');
         const [pendingRes, connRes] = await Promise.all([getPendingRequests(), getConnections()]);
         setRequests(pendingRes.data.data);
         setConnections(connRes.data.data);
       } catch (err) {
         console.error(err);
+        setError(err.response?.data?.message || 'Failed to load connections');
       } finally {
         setLoading(false);
       }
@@ -37,6 +43,7 @@ const Requests = () => {
       }
     } catch (err) {
       console.error(err);
+      setError(err.response?.data?.message || 'Failed to accept request');
     }
   };
 
@@ -46,6 +53,7 @@ const Requests = () => {
       setRequests(requests.filter(r => r.senderId.userId !== userId));
     } catch (err) {
       console.error(err);
+      setError(err.response?.data?.message || 'Failed to reject request');
     }
   };
 
@@ -74,42 +82,79 @@ const Requests = () => {
       <div className="mt-4">
         {loading ? (
           <div className="text-center p-4">Loading...</div>
+        ) : error ? (
+          <div className="card text-center text-muted p-4">{error}</div>
         ) : activeTab === 'pending' ? (
           <div className="flex-col gap-2">
-            {requests.length === 0 ? (
+            {incomingRequests.length === 0 && sentRequests.length === 0 ? (
               <div className="card text-center text-muted p-4">No pending requests</div>
             ) : (
-              requests.map(req => (
-                <div key={req._id} className="card flex justify-between items-center" style={{ flexDirection: 'row', display: 'flex' }}>
-                  <div className="flex gap-2 items-center">
-                    <img
-                      src={req.senderId.profileImage || profilePlaceholder}
-                      alt={req.senderId.name}
-                      style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
-                    />
-                    <div style={{ textAlign: 'left' }}>
-                      <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{req.senderId.name}</h3>
-                      <p className="text-sm text-muted" style={{ margin: 0 }}>{req.senderId.userId}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-1">
-                    <button 
-                      className="btn" 
-                      onClick={() => handleAccept(req.senderId.userId)}
-                      style={{ padding: '0.5rem 1rem', width: 'auto' }}
-                    >
-                      Accept
-                    </button>
-                    <button 
-                      className="btn secondary" 
-                      onClick={() => handleReject(req.senderId.userId)}
-                      style={{ padding: '0.5rem 1rem', width: 'auto' }}
-                    >
-                      Reject
-                    </button>
-                  </div>
+              <>
+                <div className="mb-2">
+                  <h3 className="mb-1">Incoming</h3>
+                  <p className="text-sm text-muted">People waiting for your response.</p>
                 </div>
-              ))
+                {incomingRequests.length === 0 ? (
+                  <div className="card text-center text-muted p-4">No incoming requests</div>
+                ) : (
+                  incomingRequests.map(req => (
+                    <div key={req._id} className="card request-row">
+                      <div className="flex gap-2 items-center">
+                        <img
+                          src={req.senderId.profileImage || profilePlaceholder}
+                          alt={req.senderId.name}
+                          style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+                        />
+                        <div style={{ textAlign: 'left' }}>
+                          <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{req.senderId.name}</h3>
+                          <p className="text-sm text-muted" style={{ margin: 0 }}>{req.senderId.userId}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-1 request-actions">
+                        <button 
+                          className="btn" 
+                          onClick={() => handleAccept(req.senderId.userId)}
+                          style={{ padding: '0.5rem 1rem', width: 'auto' }}
+                        >
+                          Accept
+                        </button>
+                        <button 
+                          className="btn secondary" 
+                          onClick={() => handleReject(req.senderId.userId)}
+                          style={{ padding: '0.5rem 1rem', width: 'auto' }}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+
+                <div className="mb-2 mt-4">
+                  <h3 className="mb-1">Sent</h3>
+                  <p className="text-sm text-muted">Requests you have already sent.</p>
+                </div>
+                {sentRequests.length === 0 ? (
+                  <div className="card text-center text-muted p-4">No sent requests</div>
+                ) : (
+                  sentRequests.map(req => (
+                    <div key={req._id} className="card request-row">
+                      <div className="flex gap-2 items-center">
+                        <img
+                          src={req.receiverId.profileImage || profilePlaceholder}
+                          alt={req.receiverId.name}
+                          style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+                        />
+                        <div style={{ textAlign: 'left' }}>
+                          <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{req.receiverId.name}</h3>
+                          <p className="text-sm text-muted" style={{ margin: 0 }}>{req.receiverId.userId}</p>
+                        </div>
+                      </div>
+                      <div className="request-pill">Pending</div>
+                    </div>
+                  ))
+                )}
+              </>
             )}
           </div>
         ) : (
