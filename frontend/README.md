@@ -1,4 +1,4 @@
-# CommunityConnect
+# NestConnect
 
 A hyperlocal networking platform for people in the same organization — apartment complex, college, or workplace. Find peers with similar skills, connect with mentors, and chat in real time. No noise, no global feed — just your community.
 
