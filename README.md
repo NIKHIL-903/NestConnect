@@ -12,7 +12,8 @@ A hyperlocal networking platform for people in the same organization — apartme
 - Chat in real time with accepted connections
 
 ---
-
+**Live** - https://nest-connect.vercel.app/auth
+---
 ## Tech Stack
 
 **Frontend** — React, React Router, Axios, Socket.IO client  
