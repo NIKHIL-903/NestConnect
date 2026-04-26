@@ -1,10 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-const domainSchema = new Schema({
-    name: { type: String, required: true },
-    skills: [{ type: String }]
-}, { _id: false });
+const domainSchema = new Schema({  // this is a 
+    name: { type: String, required: true }, // domain name 
+    skills: [{ type: String }] // array of strings
+}, { _id: false }); 
 
 const userSchema = new Schema(
     {
@@ -67,6 +67,10 @@ const userSchema = new Schema(
         profileImage: {
             type: String // Cloudinary URL
         },
+        visitorCount: {
+            type: Number,
+            default: 0
+        },
         refreshToken: {
             type: String
         }
@@ -74,12 +78,14 @@ const userSchema = new Schema(
     { timestamps: true }
 );
 
-// Hash password before saving using bcrypt
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+// hashing the password before saving , this keyword refers to current data
+userSchema.pre("save", async function (next) {  // mongoose presave middleware
+    if (!this.isModified("password")) return next(); // to prevent rehashing already hashed password
     this.password = await bcrypt.hash(this.password, 10);
-    next();
+    next(); // pass to next middleware 
 });
+
+// for async functions next() is not needed
 
 // Add method to compare password
 userSchema.methods.isPasswordCorrect = async function (password) {

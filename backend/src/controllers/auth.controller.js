@@ -98,7 +98,7 @@ const registerUser = asyncHandler(async (req, res) => {
         if (avatar) {
             profileImage = avatar.url;
         }
-    }
+    }   
 
     // Create new user
     const user = await User.create({
@@ -149,14 +149,19 @@ const registerUser = asyncHandler(async (req, res) => {
  * Login user and return tokens
  */
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { identifier, email, password } = req.body;
+    const normalizedIdentifier = (identifier || email || "").trim().toLowerCase();
 
-    if (!email || !password) {
-        throw new ApiError(400, "Email and password are required");
+    if (!normalizedIdentifier || !password) {
+        throw new ApiError(400, "Username or email and password are required");
     }
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+        $or: [
+            { email: normalizedIdentifier },
+            { userId: normalizedIdentifier }
+        ]
+    });
 
     if (!user) {
         throw new ApiError(404, "User does not exist");

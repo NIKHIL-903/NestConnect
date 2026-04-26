@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const isActive = (path) => {
     return location.pathname === path ? 'active' : '';
@@ -16,13 +16,37 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-brand">
         <Link to="/dashboard">NestConnect</Link>
+        {user?.org?.orgName && (
+          <span className="navbar-org-name">{user.org.orgName}</span>
+        )}
       </div>
       <div className="nav-links">
-        <Link to="/dashboard" className={isActive('/dashboard')}>Dashboard</Link>
+        <Link to="/dashboard" className={isActive('/dashboard')}>People</Link>
         <Link to="/profile/me" className={isActive('/profile/me')}>Profile</Link>
-        <Link to="/requests" className={isActive('/requests')}>Requests</Link>
+        <Link to="/requests" className={isActive('/requests')}>Connections</Link>
       </div>
       <div className="nav-actions">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-end'
+          }}
+        >
+          {user?.userId && (
+            <span
+              style={{
+                color: 'var(--text-muted)',
+                fontSize: '0.95rem',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              @{user.userId}
+            </span>
+          )}
+        </div>
         <button 
           onClick={async () => {
             await logout();

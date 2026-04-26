@@ -204,7 +204,7 @@ const UpdateProfile = () => {
   return (
     <div className="page-wrapper" style={{ maxWidth: '800px' }}>
       <div className="card p-4">
-        <h2 className="mb-4 text-center">Update Your Profile</h2>
+        <h2 className="mb-4 text-center">Edit your profile</h2>
         
         <form onSubmit={handleSubmit}>
           
@@ -224,7 +224,7 @@ const UpdateProfile = () => {
                   height: '80px',
                   borderRadius: '50%',
                   objectFit: 'cover',
-                  border: '2px dashed #555'
+                  border: '2px dashed var(--border-color)'
                 }}
               />
             </label>
@@ -256,7 +256,7 @@ const UpdateProfile = () => {
               {formData.username === user?.userId && <p className="text-sm mt-1" style={{ color: 'var(--text-muted)', margin: 0 }}>Your current username</p>}
             </div>
             <div>
-              <label className="text-sm text-muted">Org Code</label>
+              <label className="text-sm text-muted">Organization code</label>
               <input 
                 value={user?.orgCode || ''}
                 className="input-field" 
@@ -265,7 +265,7 @@ const UpdateProfile = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted">Org Name</label>
+              <label className="text-sm text-muted">Organization name</label>
               <input 
                 value={orgName || 'Fetching...'}
                 className="input-field" 
@@ -274,7 +274,7 @@ const UpdateProfile = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted">Full Name</label>
+              <label className="text-sm text-muted">Full name</label>
               <input 
                 name="name"
                 value={formData.name}
@@ -304,7 +304,7 @@ const UpdateProfile = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted">Block / Tower / Road No</label>
+              <label className="text-sm text-muted">Block, tower, or road</label>
               <input 
                 name="block"
                 value={formData.block}
@@ -327,7 +327,7 @@ const UpdateProfile = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted">Door no / House no</label>
+              <label className="text-sm text-muted">Door or house number</label>
               <input 
                 name="doorNo"
                 value={formData.doorNo}
@@ -351,19 +351,19 @@ const UpdateProfile = () => {
           </div>
 
           <div className="mb-2">
-            <label className="text-sm text-muted">Achievements (Optional)</label>
+            <label className="text-sm text-muted">Achievements (optional)</label>
             <textarea 
               name="achievements"
               value={formData.achievements}
               onChange={handleInputChange}
               className="input-field" 
-              placeholder="e.g. Won Hackathon 2023, Published a paper on AI"
+              placeholder="Anything you are proud of"
               rows="2"
             ></textarea>
           </div>
 
           <div className="mb-4 mt-4">
-            <h3 className="mb-2">Domains of Interest</h3>
+            <h3 className="mb-2">Interests</h3>
             <DomainSelector 
               selectedDomains={selectedDomains} 
               onChange={setSelectedDomains} 
@@ -384,9 +384,9 @@ const UpdateProfile = () => {
           </div>
 
           {getAllSkills().length > 0 && (
-            <div className="mb-4 mt-4" style={{ borderTop: '1px solid #333', paddingTop: '2rem' }}>
+            <div className="mb-4 mt-4" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
               <div className="flex items-center gap-2 mb-2">
-                <h3 style={{ margin: 0 }}>Open to Mentor?</h3>
+                <h3 style={{ margin: 0 }}>Open to mentoring?</h3>
                 <select 
                   className="input-field" 
                   style={{ width: '120px', marginBottom: 0 }}
@@ -400,7 +400,7 @@ const UpdateProfile = () => {
 
               {openToMentor === 'Yes' && (
                 <div className="mt-4">
-                  <p className="text-sm text-muted mb-2">Select to add your Mentor Domains and Skills:</p>
+                  <p className="text-sm text-muted mb-2">Choose the areas where you can help others.</p>
                   <DomainSelector 
                     selectedDomains={mentorSelectedDomains} 
                     onChange={setMentorSelectedDomains} 
@@ -424,8 +424,8 @@ const UpdateProfile = () => {
           )}
 
           <div className="mt-4 flex gap-4">
-            <button type="button" className="btn" style={{ flex: 1, background: 'transparent', border: '1px solid #555' }} onClick={() => navigate('/profile/me')}>Cancel</button>
-            <button type="submit" className="btn" style={{ flex: 1 }}>Save Changes</button>
+            <button type="button" className="btn secondary" style={{ flex: 1 }} onClick={() => navigate('/profile/me')}>Cancel</button>
+            <button type="submit" className="btn" style={{ flex: 1 }}>Save changes</button>
           </div>
         </form>
       </div>

@@ -20,7 +20,7 @@ const Auth = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await login({ email: identifier, password });
+      await login({ identifier, password });
       navigate('/dashboard');
     } catch (err) {
       console.error(err);
@@ -32,7 +32,7 @@ const Auth = () => {
     e.preventDefault();
     setOrgCodeError('');
     if (!orgCode) {
-      setOrgCodeError('Organization Code is required');
+      setOrgCodeError('Organization code is required');
       return;
     }
     
@@ -42,7 +42,7 @@ const Auth = () => {
       if (res.data?.data?.valid) {
         navigate('/register', { state: { orgCode } });
       } else {
-        setOrgCodeError('Invalid Organization Code. Please try again.');
+        setOrgCodeError('That organization code does not look right.');
       }
     } catch (error) {
       console.error(error);
@@ -60,10 +60,10 @@ const Auth = () => {
             NestConnect
           </h1>
           <p className="text-muted" style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>
-            Connect with your neighbours within your Residential Community
+            Meet the people who live, study, or work around you.
           </p>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: '500', color: '#fff' }}>
-            {isLogin ? 'Welcome Back' : 'Join Your Community'}
+          <h2 style={{ fontSize: '1.4rem', fontWeight: '500', color: 'var(--text-color)' }}>
+            {isLogin ? 'Welcome back' : 'Join your community'}
           </h2>
         </div>
         
@@ -82,7 +82,7 @@ const Auth = () => {
             style={{ width: 'auto', padding: '0.5rem 1.5rem' }}
             type="button"
           >
-            New User
+            New here
           </button>
         </div>
 
@@ -92,7 +92,7 @@ const Auth = () => {
               <input 
                 className="input-field" 
                 type="text" 
-                placeholder="Email" 
+                placeholder="Email or username" 
                 style={{ padding: '0.8rem' }}
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
@@ -116,12 +116,12 @@ const Auth = () => {
           <form onSubmit={handleNewUser} className="flex-col gap-2">
             <div>
               <p className="text-sm text-muted mb-2 text-center">
-                Enter your community's organization code to join.
+                Enter the organization code shared by your community.
               </p>
               <input 
                 className="input-field" 
                 type="text" 
-                placeholder="Organization Code"
+                placeholder="Organization code"
                 style={{ padding: '0.8rem', borderColor: orgCodeError ? '#f87171' : undefined }}
                 value={orgCode}
                 onChange={(e) => {
@@ -133,14 +133,14 @@ const Auth = () => {
               {orgCodeError && <p className="text-sm mt-1 text-center" style={{ color: '#f87171', margin: '0' }}>{orgCodeError}</p>}
             </div>
             <button className="btn mt-2" type="submit" disabled={isCheckingOrg} style={{ padding: '0.8rem' }}>
-               {isCheckingOrg ? 'Validating...' : 'Continue Registration'}
+               {isCheckingOrg ? 'Checking...' : 'Continue'}
             </button>
             <div className="mt-4 text-center">
               <p className="text-sm text-muted mb-1">
-                Don't have an organization code?
+                Starting a new community?
               </p>
               <Link to="/register-org" style={{ color: 'var(--primary-accent)' }}>
-                Register your organization
+                Create an organization
               </Link>
             </div>
           </form>

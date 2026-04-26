@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import UserCard from '../components/UserCard';
 import DomainSelector from '../components/DomainSelector';
-import { getDiscoverUsers } from '../api/api';
+import { getDiscoverUsers, getPopularUsers } from '../api/api';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('peers'); // peers or learners
   const [selectedDomain, setSelectedDomain] = useState('');
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [popularUsers, setPopularUsers] = useState([]);
+  const [popularLoading, setPopularLoading] = useState(true);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     if (!selectedDomain) return setUsers([]);
     setLoading(true);
     try {
@@ -22,17 +24,34 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, selectedDomain]);
+
+  const fetchPopularUsers = useCallback(async () => {
+    setPopularLoading(true);
+    try {
+      const res = await getPopularUsers();
+      setPopularUsers(res.data.data || []);
+    } catch (err) {
+      console.error(err);
+      setPopularUsers([]);
+    } finally {
+      setPopularLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchUsers();
-  }, [selectedDomain, activeTab]);
+  }, [fetchUsers]);
+
+  useEffect(() => {
+    fetchPopularUsers();
+  }, [fetchPopularUsers]);
 
   return (
     <div className="dashboard-wrapper">
       <div className="header mb-4">
-        <h1>Dashboard</h1>
-        <p>Connect with your community</p>
+        <h1>People nearby</h1>
+        <p>Find people in your organization by interest or skill.</p>
       </div>
 
       <div className="tabs">
@@ -40,13 +59,13 @@ const Dashboard = () => {
           className={`tab ${activeTab === 'peers' ? 'active' : ''}`}
           onClick={() => setActiveTab('peers')}
         >
-          Find Peers
+          Find peers
         </div>
         <div 
           className={`tab ${activeTab === 'learners' ? 'active' : ''}`}
           onClick={() => setActiveTab('learners')}
         >
-          Find Mentors
+          Find mentors
         </div>
       </div>
 
@@ -59,25 +78,46 @@ const Dashboard = () => {
           />
         </div>
         <p className="text-sm text-muted mb-1" style={{ flex: 1 }}>
-          Select a domain to see {activeTab === 'peers' ? 'people with similar interests' : 'available mentors'}.
+          Choose a domain to see {activeTab === 'peers' ? 'people with similar interests' : 'people open to mentoring'}.
         </p>
       </div>
 
       {loading ? (
-        <div className="text-center p-4">Loading...</div>
+        <div className="text-center p-4">Looking around...</div>
       ) : users.length > 0 ? (
         <div className="grid">
           {users.map(user => (
-            <UserCard key={user.id} user={user} />
+            <UserCard key={user._id || user.userId} user={user} />
           ))}
         </div>
       ) : (
         <div className="text-center p-4 card text-muted">
           {selectedDomain 
             ? `No ${activeTab === 'peers' ? 'peers' : 'mentors'} found for ${selectedDomain}.`
-            : "Select a domain to get started."}
+            : "Choose a domain when you are ready."}
         </div>
       )}
+
+      <div className="mt-4">
+        <div className="header mb-2">
+          <h1 style={{ fontSize: '1.35rem', marginBottom: '0.25rem' }}>Recently viewed people</h1>
+          <p>Profiles your community has been checking out.</p>
+        </div>
+
+        {popularLoading ? (
+          <div className="text-center p-4 card text-muted">Loading people...</div>
+        ) : popularUsers.length > 0 ? (
+          <div className="grid">
+            {popularUsers.map(user => (
+              <UserCard key={user.userId} user={user} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center p-4 card text-muted">
+            No profile visits yet.
+          </div>
+        )}
+      </div>
     </div>
   );
 };

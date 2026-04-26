@@ -6,7 +6,8 @@ import {
   logoutUser, 
   getMe, 
   setAccessToken,
-  getUserProfile
+  getUserProfile,
+  getOrganization
 } from '../api/api';
 
 const AuthContext = createContext(null);
@@ -14,6 +15,24 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const enrichUserWithOrg = async (baseUser) => {
+    if (!baseUser?.orgCode) return baseUser;
+
+    try {
+      const orgRes = await getOrganization(baseUser.orgCode);
+      return {
+        ...baseUser,
+        org: orgRes.data.data
+      };
+    } catch (error) {
+      console.error('Failed to fetch organization for auth user:', error);
+      return {
+        ...baseUser,
+        org: null
+      };
+    }
+  };
 
   useEffect(() => {
     const initAuth = async () => {
@@ -26,7 +45,7 @@ export const AuthProvider = ({ children }) => {
           
           await getMe();
           const profileRes = await getUserProfile('profile');
-          setUser(profileRes.data.data);
+          setUser(await enrichUserWithOrg(profileRes.data.data));
         } catch (error) {
           console.error('Auth init failed:', error);
           localStorage.removeItem('refreshToken');
@@ -46,7 +65,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('refreshToken', refreshToken);
     
     const profileRes = await getUserProfile('profile');
-    setUser(profileRes.data.data);
+    setUser(await enrichUserWithOrg(profileRes.data.data));
     return res.data;
   };
 
@@ -57,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('refreshToken', refreshToken);
     
     const profileRes = await getUserProfile('profile');
-    setUser(profileRes.data.data);
+    setUser(await enrichUserWithOrg(profileRes.data.data));
     return res.data;
   };
 

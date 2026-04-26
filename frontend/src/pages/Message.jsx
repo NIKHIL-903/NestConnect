@@ -92,7 +92,7 @@ const Message = () => {
   }, [connectionId]);
 
   const handleRemoveConnection = async () => {
-    if (!window.confirm(`Remove connection with ${contactName}? This will also delete all messages.`)) return;
+    if (!window.confirm(`Remove connection with ${contactName}?`)) return;
     try {
       await removeConnection(contactUserId);
       navigate('/requests');
@@ -122,12 +122,12 @@ const Message = () => {
       <div className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
         
         {/* Header */}
-        <div style={{ padding: '1rem', borderBottom: '1px solid #333', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button 
             onClick={() => navigate('/requests')}
-            style={{ background: 'none', border: 'none', color: 'var(--text-color)', cursor: 'pointer', fontSize: '1.2rem' }}
+            style={{ background: 'none', border: 'none', color: 'var(--text-color)', cursor: 'pointer', fontSize: '0.95rem' }}
           >
-            ←
+            Back
           </button>
           <img
             src={contactImage || profilePlaceholder}
@@ -149,7 +149,7 @@ const Message = () => {
                 whiteSpace: 'nowrap'
               }}
             >
-              Remove Connection
+              Remove
             </button>
           )}
         </div>
@@ -173,8 +173,9 @@ const Message = () => {
                     alignItems: isMe ? 'flex-end' : 'flex-start'
                   }}>
                     <div style={{
-                      background: isMe ? 'var(--primary-accent)' : '#333',
-                      color: '#fff',
+                      background: isMe ? 'var(--primary-accent)' : 'var(--bg-color)',
+                      color: isMe ? '#fff' : 'var(--text-color)',
+                      border: isMe ? 'none' : '1px solid var(--border-color)',
                       padding: '0.75rem 1rem',
                       borderRadius: isMe ? '16px 16px 0 16px' : '16px 16px 16px 0',
                       lineHeight: '1.4'
@@ -203,7 +204,7 @@ const Message = () => {
         </div>
 
         {/* Input Area */}
-        <div style={{ padding: '1rem', borderTop: '1px solid #333' }}>
+        <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)' }}>
           <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '0.5rem' }}>
             <input 
               type="text" 

@@ -29,15 +29,15 @@ const RegisterOrg = () => {
   return (
     <div className="page-wrapper">
       <div className="card p-4">
-        <h2 className="text-center mb-1">Register Organization</h2>
-        <p className="text-center text-muted mb-4">Set up a space for your community</p>
+        <h2 className="text-center mb-1">Create an organization</h2>
+        <p className="text-center text-muted mb-4">Make a private space for your community.</p>
 
         {!generatedCode ? (
           <form onSubmit={handleSubmit}>
             <input 
               className="input-field" 
               type="text" 
-              placeholder="Organization Name"
+              placeholder="Organization name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -45,27 +45,28 @@ const RegisterOrg = () => {
             <input 
               className="input-field" 
               type="text" 
-              placeholder="City / Town"
+              placeholder="City or town"
               value={city}
               onChange={(e) => setCity(e.target.value)}
               required
             />
             <textarea
               className="input-field"
-              placeholder="Description about the community"
+              placeholder="A short note about this community"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows="3"
               style={{ marginTop: '0.5rem', resize: 'vertical' }}
             />
-            <button className="btn mt-2" type="submit">Create Organization</button>
+            <button className="btn mt-2" type="submit">Create organization</button>
           </form>
         ) : (
           <div className="text-center">
-            <h3>Organization Created!</h3>
+            <h3>Organization created</h3>
             <p className="text-muted mt-2 mb-2">Your organization code is:</p>
             <div className="p-2 mb-2" style={{ 
-              background: '#333', 
+              background: 'var(--bg-color)', 
+              border: '1px solid var(--border-color)',
               fontSize: '1.5rem', 
               letterSpacing: '2px', 
               borderRadius: '4px',
@@ -73,7 +74,7 @@ const RegisterOrg = () => {
             }}>
               {generatedCode}
             </div>
-            <p className="text-sm text-muted">Redirecting to user registration...</p>
+            <p className="text-sm text-muted">Taking you to profile setup...</p>
           </div>
         )}
       </div>

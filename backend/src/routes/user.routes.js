@@ -5,7 +5,8 @@ import {
     getUserProfile,
     updateUserProfile,
     getUserById,
-    checkUserId
+    checkUserId,
+    getPopularUsers
 } from '../controllers/user.controller.js';
 
 const router = Router();
@@ -17,6 +18,7 @@ router.get("/check-userid/:userId", checkUserId);
 router.use(verifyJWT);
 
 router.get("/profile", getUserProfile);
+router.get("/popular", getPopularUsers);
 router.patch("/profile", upload.single("profileImage"), updateUserProfile);
 router.get("/:userId", getUserById);
 

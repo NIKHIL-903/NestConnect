@@ -8,7 +8,7 @@ const ProtectedRoute = () => {
   if (loading) {
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        Loading...
+        Loading your account...
       </div>
     );
   }

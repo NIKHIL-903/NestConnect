@@ -2,6 +2,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { User } from '../models/user.model.js';
+import { Connection } from '../models/connection.model.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 /**
@@ -121,6 +122,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
  */
 export const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
+    const { source } = req.query;
 
     const user = await User.findOne({ userId }).select("-password -refreshToken -email");
 
@@ -128,8 +130,62 @@ export const getUserById = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
+    const isOwnProfile = req.user.userId === user.userId;
+    const shouldCountVisit = !isOwnProfile && source !== "requests";
+
+    if (shouldCountVisit) {
+        user.visitorCount = (user.visitorCount || 0) + 1;
+        await user.save({ validateBeforeSave: false });
+    }
+
+    let isConnection = false;
+
+    if (!isOwnProfile) {
+        const acceptedConnection = await Connection.findOne({
+            $or: [
+                { senderId: req.user._id, receiverId: user._id },
+                { senderId: user._id, receiverId: req.user._id }
+            ],
+            status: "accepted"
+        }).select("_id");
+
+        isConnection = Boolean(acceptedConnection);
+    }
+
+    const canViewResidenceDetails = isOwnProfile || isConnection;
+    const userObject = user.toObject();
+
+    if (!canViewResidenceDetails) {
+        delete userObject.block;
+        delete userObject.floor;
+        delete userObject.doorNo;
+    }
+
+    userObject.isConnection = isConnection;
+    userObject.canViewResidenceDetails = canViewResidenceDetails;
+    userObject.residenceDetailsLockedMessage = canViewResidenceDetails
+        ? ""
+        : "Residence details will be visible once you both become connections.";
+
     return res.status(200).json(
-        new ApiResponse(200, user, "User fetched successfully")
+        new ApiResponse(200, userObject, "User fetched successfully")
+    );
+});
+
+/**
+ * Get top visited users in the same organization
+ */
+export const getPopularUsers = asyncHandler(async (req, res) => {
+    const users = await User.find({
+        orgCode: req.user.orgCode,
+        _id: { $ne: req.user._id }
+    })
+        .sort({ visitorCount: -1, updatedAt: -1 })
+        .limit(10)
+        .select("name userId profileImage occupation visitorCount");
+
+    return res.status(200).json(
+        new ApiResponse(200, users, "Popular users fetched successfully")
     );
 });
 

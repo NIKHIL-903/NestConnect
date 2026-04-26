@@ -31,7 +31,7 @@ const DomainSelector = ({ selectedDomains, onChange, multiple = true }) => {
         onChange={handleChange}
         value={(!multiple && selectedDomains.length > 0) ? selectedDomains[0] : ""}
       >
-        <option value="" disabled>Select a domain...</option>
+        <option value="" disabled>Choose an interest</option>
         {domains.map(domain => (
           <option key={domain} value={domain}>{domain}</option>
         ))}
@@ -41,8 +41,9 @@ const DomainSelector = ({ selectedDomains, onChange, multiple = true }) => {
         <div className="flex gap-1 mt-1" style={{ flexWrap: 'wrap' }}>
           {selectedDomains.map(domain => (
             <div key={domain} style={{
-              background: 'var(--primary-accent)',
-              color: '#fff',
+              background: 'var(--soft-accent)',
+              color: 'var(--primary-accent)',
+              border: '1px solid rgba(255, 122, 0, 0.35)',
               padding: '4px 12px',
               borderRadius: '16px',
               display: 'flex',
@@ -57,7 +58,7 @@ const DomainSelector = ({ selectedDomains, onChange, multiple = true }) => {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#fff',
+                  color: 'var(--primary-accent)',
                   cursor: 'pointer',
                   fontWeight: 'bold'
                 }}

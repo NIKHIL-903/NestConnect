@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getUserProfile, sendConnectionRequest, getMe, getOrganization } from '../api/api';
 import profilePlaceholder from '../assets/profile.png';
 
 const Profile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [requestSent, setRequestSent] = useState(false);
+  const isOwnProfile = id === 'me';
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -17,10 +19,17 @@ const Profile = () => {
         if (id === 'me') {
           res = await getMe();
         } else {
-          res = await getUserProfile(id);
+          const searchParams = new URLSearchParams(location.search);
+          const source = searchParams.get('source');
+          res = await getUserProfile(`${id}${source ? `?source=${encodeURIComponent(source)}` : ''}`);
         }
         
         const userData = res.data.data;
+
+        if (isOwnProfile) {
+          userData.canViewResidenceDetails = true;
+          userData.isConnection = false;
+        }
         
         // Fetch org details if user has an orgCode
         if (userData.orgCode) {
@@ -41,7 +50,7 @@ const Profile = () => {
       }
     };
     fetchProfile();
-  }, [id]);
+  }, [id, isOwnProfile, location.search]);
 
   const handleConnect = async () => {
     try {
@@ -59,7 +68,7 @@ const Profile = () => {
   return (
     <div className="page-wrapper" style={{ maxWidth: '800px' }}>
       <div className="card">
-        <div className="profile-header mb-4 pb-4" style={{ borderBottom: '1px solid #333' }}>
+        <div className="profile-header mb-4 pb-4" style={{ borderBottom: '1px solid var(--border-color)' }}>
           <img
             src={user.profileImage || profilePlaceholder}
             alt={user.name}
@@ -76,12 +85,13 @@ const Profile = () => {
             <div className="profile-heading-row">
               <div style={{ minWidth: 0 }}>
                 <h2 style={{ fontSize: '2rem', marginBottom: '0.25rem', marginTop: 0 }}>{user.name}</h2>
+                <p className="text-muted" style={{ fontSize: '1rem', margin: '0 0 0.25rem 0' }}>@{user.userId}</p>
                 <p className="text-muted" style={{ fontSize: '1.1rem', margin: 0 }}>{user.occupation}</p>
               </div>
               <div className="profile-org-summary">
                 <div className="profile-org-badges">
                   <span style={{ 
-                    background: 'rgba(255, 122, 0, 0.1)', 
+                    background: 'var(--soft-accent)', 
                     color: 'var(--primary-accent)', 
                     padding: '4px 12px', 
                     borderRadius: '16px',
@@ -91,8 +101,8 @@ const Profile = () => {
                     {user.orgCode}
                   </span>
                   <span style={{ 
-                    background: '#333', 
-                    color: '#fff', 
+                    background: 'var(--bg-color)', 
+                    color: 'var(--text-color)', 
                     padding: '4px 12px', 
                     borderRadius: '16px',
                     fontSize: '0.85rem'
@@ -121,21 +131,27 @@ const Profile = () => {
         )}
 
         <div className="mb-4 p-4" style={{ background: 'var(--bg-color)', borderRadius: '8px' }}>
-          <h3 className="mb-2" style={{ fontSize: '1.1rem' }}>Residence Details</h3>
-          <div className="grid profile-residence-grid" style={{ gap: '1rem' }}>
-            <div>
-              <p className="text-sm text-muted mb-1" style={{ margin: 0 }}>Block / Tower / Road No</p>
-              <p style={{ margin: 0, fontWeight: '500' }}>{user.block || 'N/A'}</p>
+          <h3 className="mb-2" style={{ fontSize: '1.1rem' }}>Residence details</h3>
+          {user.canViewResidenceDetails ? (
+            <div className="grid profile-residence-grid" style={{ gap: '1rem' }}>
+              <div>
+                <p className="text-sm text-muted mb-1" style={{ margin: 0 }}>Block, tower, or road</p>
+                <p style={{ margin: 0, fontWeight: '500' }}>{user.block || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted mb-1" style={{ margin: 0 }}>Floor</p>
+                <p style={{ margin: 0, fontWeight: '500' }}>{user.floor || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted mb-1" style={{ margin: 0 }}>Door or house number</p>
+                <p style={{ margin: 0, fontWeight: '500' }}>{user.doorNo || 'N/A'}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-muted mb-1" style={{ margin: 0 }}>Floor</p>
-              <p style={{ margin: 0, fontWeight: '500' }}>{user.floor || 'N/A'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted mb-1" style={{ margin: 0 }}>Door no / House no</p>
-              <p style={{ margin: 0, fontWeight: '500' }}>{user.doorNo || 'N/A'}</p>
-            </div>
-          </div>
+          ) : (
+            <p className="text-muted" style={{ margin: 0, lineHeight: '1.6' }}>
+              {user.residenceDetailsLockedMessage || 'Residence details will be visible once you both become connections.'}
+            </p>
+          )}
         </div>
 
         <div className="grid mb-4">
@@ -146,7 +162,7 @@ const Profile = () => {
                 <p className="font-bold text-sm mb-1" style={{ color: 'var(--primary-accent)' }}>{domain.name}</p>
                 <div className="flex gap-1" style={{ flexWrap: 'wrap' }}>
                   {domain.skills?.map(skill => (
-                    <span key={skill} style={{ background: '#333', padding: '4px 10px', borderRadius: '4px', fontSize: '0.9rem' }}>
+                    <span key={skill} style={{ background: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '4px 10px', borderRadius: '4px', fontSize: '0.9rem' }}>
                       {skill}
                     </span>
                   ))}
@@ -157,21 +173,21 @@ const Profile = () => {
 
           {user.mentorDomains && user.mentorDomains.length > 0 && (
             <div>
-              <h3 className="mb-2">Would Like to Mentor In</h3>
+              <h3 className="mb-2">Can mentor in</h3>
               {user.mentorDomains.map((domain, index) => (
                 <div key={`mentor-${index}`} className="mb-2">
                   <p className="font-bold text-sm mb-1" style={{ color: 'var(--primary-accent)' }}>{domain.name}</p>
                   <div className="flex gap-1" style={{ flexWrap: 'wrap' }}>
                     {domain.skills?.map(skill => (
                       <span key={`mentor-skill-${skill}`} style={{ 
-                        background: 'rgba(255, 122, 0, 0.1)', 
+                        background: 'var(--soft-accent)', 
                         color: 'var(--primary-accent)',
                         border: '1px solid var(--primary-accent)',
                         padding: '4px 10px', 
                         borderRadius: '20px', 
                         fontSize: '0.9rem' 
                       }}>
-                        ★ {skill}
+                        {skill}
                       </span>
                     ))}
                   </div>
@@ -181,25 +197,25 @@ const Profile = () => {
           )}
         </div>
 
-        {id === 'me' ? (
-          <div className="mt-4 pt-4" style={{ borderTop: '1px solid #333', textAlign: 'center' }}>
+        {isOwnProfile ? (
+          <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
             <button 
               className="btn" 
               onClick={() => navigate('/update-profile')}
               style={{ maxWidth: '200px' }}
             >
-              Update Profile
+              Edit profile
             </button>
           </div>
         ) : (
-          <div className="mt-4 pt-4" style={{ borderTop: '1px solid #333', textAlign: 'center' }}>
+          <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
             <button
               className="btn"
               onClick={handleConnect}
-              disabled={requestSent}
+              disabled={requestSent || user.isConnection}
               style={{ maxWidth: '200px' }}
             >
-              {requestSent ? 'Request Sent' : 'Connect'}
+              {user.isConnection ? 'Connected' : requestSent ? 'Request sent' : 'Connect'}
             </button>
           </div>
         )}

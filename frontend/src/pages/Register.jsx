@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DomainSelector from '../components/DomainSelector';
 import SkillInput from '../components/SkillInput';
-import { registerUser, checkUserId, checkOrgCode } from '../api/api';
+import { checkUserId, checkOrgCode } from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import profilePlaceholder from '../assets/profile.png';
 
@@ -116,7 +116,7 @@ const Register = () => {
       return;
     }
     if (orgCodeStatus !== 'available') {
-      alert('Please validate your Organization Code first');
+      alert('Please check your organization code first');
       return;
     }
     setIsSubmitting(true);
@@ -170,25 +170,25 @@ const Register = () => {
     {isSubmitting && (
       <div style={{
         position: 'fixed', inset: 0,
-        background: 'rgba(0,0,0,0.75)',
+        background: 'rgba(38, 33, 29, 0.72)',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         zIndex: 9999, gap: '1.25rem'
       }}>
         <div style={{
           width: '52px', height: '52px',
-          border: '5px solid #333',
+          border: '5px solid var(--border-color)',
           borderTop: '5px solid var(--primary-accent)',
           borderRadius: '50%',
           animation: 'spin 0.9s linear infinite'
         }} />
-        <p style={{ color: '#fff', fontSize: '1.1rem', margin: 0 }}>Creating your account...</p>
+        <p style={{ color: '#fff', fontSize: '1.1rem', margin: 0 }}>Setting up your profile...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     )}
     <div className="page-wrapper" style={{ maxWidth: '800px' }}>
       <div className="card p-4">
-        <h2 className="mb-4 text-center">Complete Your Profile</h2>
+        <h2 className="mb-4 text-center">Tell people a little about you</h2>
         
         <form onSubmit={handleSubmit}>
           
@@ -242,7 +242,7 @@ const Register = () => {
               {usernameStatus === 'unavailable' && <p className="text-sm mt-1" style={{ color: '#f87171', margin: 0 }}>Try another</p>}
             </div>
             <div>
-              <label className="text-sm text-muted">Org Code</label>
+              <label className="text-sm text-muted">Organization code</label>
               <div className="flex gap-2">
                 <input 
                   name="orgCode"
@@ -262,21 +262,21 @@ const Register = () => {
                   {orgCodeStatus === 'checking' ? '...' : orgCodeStatus === 'available' ? 'Verified' : 'Verify'}
                 </button>
               </div>
-              {orgCodeStatus === 'available' && <p className="text-sm mt-1" style={{ color: '#4ade80', margin: 0 }}>Valid Organization</p>}
+              {orgCodeStatus === 'available' && <p className="text-sm mt-1" style={{ color: '#2f7d32', margin: 0 }}>Organization found</p>}
               {orgCodeStatus === 'unavailable' && <p className="text-sm mt-1" style={{ color: '#f87171', margin: 0 }}>Invalid code</p>}
             </div>
             <div>
-              <label className="text-sm text-muted">Org Name</label>
+              <label className="text-sm text-muted">Organization name</label>
               <input 
                 value={formData.orgName}
                 className="input-field"
                 disabled
                 style={{ cursor: 'not-allowed', opacity: 0.7 }}
-                placeholder="Auto-filled after verify"
+                placeholder="Filled in after verification"
               />
             </div>
             <div>
-              <label className="text-sm text-muted">Full Name</label>
+              <label className="text-sm text-muted">Full name</label>
               <input 
                 name="name"
                 value={formData.name}
@@ -319,7 +319,7 @@ const Register = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted">Block / Tower / Road No</label>
+              <label className="text-sm text-muted">Block, tower, or road</label>
               <input 
                 name="block"
                 value={formData.block}
@@ -342,7 +342,7 @@ const Register = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-muted">Door no / House no</label>
+              <label className="text-sm text-muted">Door or house number</label>
               <input 
                 name="doorNo"
                 value={formData.doorNo}
@@ -366,19 +366,19 @@ const Register = () => {
           </div>
 
           <div className="mb-2">
-            <label className="text-sm text-muted">Achievements (Optional)</label>
+            <label className="text-sm text-muted">Achievements (optional)</label>
             <textarea 
               name="achievements"
               value={formData.achievements}
               onChange={handleInputChange}
               className="input-field" 
-              placeholder="e.g. Won Hackathon 2023, Published a paper on AI"
+              placeholder="Anything you are proud of"
               rows="2"
             ></textarea>
           </div>
 
           <div className="mb-4 mt-4">
-            <h3 className="mb-2">Domains of Interest</h3>
+            <h3 className="mb-2">Interests</h3>
             <DomainSelector 
               selectedDomains={selectedDomains} 
               onChange={setSelectedDomains} 
@@ -399,9 +399,9 @@ const Register = () => {
           </div>
 
           {getAllSkills().length > 0 && (
-            <div className="mb-4 mt-4" style={{ borderTop: '1px solid #333', paddingTop: '2rem' }}>
+            <div className="mb-4 mt-4" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
               <div className="flex items-center gap-2 mb-2">
-                <h3 style={{ margin: 0 }}>Open to Mentor?</h3>
+                <h3 style={{ margin: 0 }}>Open to mentoring?</h3>
                 <select 
                   className="input-field" 
                   style={{ width: '120px', marginBottom: 0 }}
@@ -415,7 +415,7 @@ const Register = () => {
 
               {openToMentor === 'Yes' && (
                 <div className="mt-4">
-                  <p className="text-sm text-muted mb-2">Select Domains and Skills You want to Mentor:</p>
+                  <p className="text-sm text-muted mb-2">Choose the areas where you can help others.</p>
                   <DomainSelector 
                     selectedDomains={mentorSelectedDomains} 
                     onChange={setMentorSelectedDomains} 
@@ -438,7 +438,7 @@ const Register = () => {
             </div>
           )}
 
-          <button className="btn mt-4" type="submit">Complete Registration</button>
+          <button className="btn mt-4" type="submit">Create my profile</button>
         </form>
       </div>
     </div>

@@ -30,10 +30,10 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 // Request logger (useful for debugging)
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log(`${req.method} ${req.url}`);
+//     next();
+// });
 
 
 // Test Route
@@ -52,7 +52,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/org", orgRouter);
 app.use("/api/v1/discover", discoverRouter);
 app.use("/api/v1/connections", connectionRouter);
-app.use("/api/v1/messages", messageRouter);
+app.use("/api/v1/messages", messageRouter); 
 
 
 // 404 Handler

@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import connectDB from "./config/db.js";
-import { app } from "./app.js";
-import { createServer } from "http";
+import connectDB from "./config/db.js";  //function to connect to DB
+import { app } from "./app.js";  // importing express app instance
+import { createServer } from "http"; //for socket.IO
 import { Server } from "socket.io";
 import { initChatSocket } from "./sockets/chat.socket.js";
 
-dotenv.config();
+dotenv.config(); // reads and loads .env variables into process.env
 
 const PORT = process.env.PORT || 8000;
 
@@ -20,8 +20,8 @@ async function startServer() {
         // Initialize Socket.IO
         const io = new Server(httpServer, {
             cors: {
-                origin: process.env.CORS_ORIGIN || "*",
-                credentials: true
+                origin: process.env.CORS_ORIGIN || "*", // trusting all 
+                credentials: true // browser is allowed to send sensitive data like sessioon cookies   
             }
         });
 
@@ -29,32 +29,15 @@ async function startServer() {
         initChatSocket(io);
 
         // Start server
-        httpServer.listen(PORT, () => {
+        httpServer.listen(PORT, () => { // listening for requests
             console.log(`Server running at port ${PORT}`);
         });
-
     } catch (error) {
         console.error("MongoDB connection failed:", error);
-        process.exit(1);
+        process.exit(1); // stops the server
     }
 }
 
 // Start the application
 startServer();
 
-// Graceful shutdown
-// const shutdown = () => {
-//     console.log("Shutting down server...");
-
-//     if (httpServer) {
-//         httpServer.close(() => {
-//             console.log("Server closed");
-//             process.exit(0);
-//         });
-//     } else {
-//         process.exit(0);
-//     }
-// };
-
-// process.on("SIGINT", shutdown);   // Ctrl+C
-// process.on("SIGTERM", shutdown);  // Nodemon restart

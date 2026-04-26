@@ -57,11 +57,15 @@ const Requests = () => {
     }
   };
 
+  const openProfile = (profileUserId) => {
+    navigate(`/profile/${profileUserId}?source=requests`);
+  };
+
   return (
     <div className="dashboard-wrapper">
       <div className="header mb-4">
         <h1>Connections</h1>
-        <p>Manage your community network</p>
+        <p>Keep track of the people you are getting to know.</p>
       </div>
 
       <div className="tabs">
@@ -69,37 +73,48 @@ const Requests = () => {
           className={`tab ${activeTab === 'accepted' ? 'active' : ''}`}
           onClick={() => setActiveTab('accepted')}
         >
-          My Connections ({connections.length})
+          My connections ({connections.length})
         </div>
         <div 
           className={`tab ${activeTab === 'pending' ? 'active' : ''}`}
           onClick={() => setActiveTab('pending')}
         >
-          Pending Requests ({requests.length})
+          Requests ({requests.length})
         </div>
       </div>
 
       <div className="mt-4">
         {loading ? (
-          <div className="text-center p-4">Loading...</div>
+          <div className="text-center p-4">Loading connections...</div>
         ) : error ? (
           <div className="card text-center text-muted p-4">{error}</div>
         ) : activeTab === 'pending' ? (
           <div className="flex-col gap-2">
             {incomingRequests.length === 0 && sentRequests.length === 0 ? (
-              <div className="card text-center text-muted p-4">No pending requests</div>
+              <div className="card text-center text-muted p-4">No requests right now.</div>
             ) : (
               <>
                 <div className="mb-2">
                   <h3 className="mb-1">Incoming</h3>
-                  <p className="text-sm text-muted">People waiting for your response.</p>
+                  <p className="text-sm text-muted">People who would like to connect with you.</p>
                 </div>
                 {incomingRequests.length === 0 ? (
-                  <div className="card text-center text-muted p-4">No incoming requests</div>
+                  <div className="card text-center text-muted p-4">No incoming requests.</div>
                 ) : (
                   incomingRequests.map(req => (
                     <div key={req._id} className="card request-row">
-                      <div className="flex gap-2 items-center">
+                      <div
+                        className="flex gap-2 items-center profile-preview-trigger"
+                        onClick={() => openProfile(req.senderId.userId)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            openProfile(req.senderId.userId);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                      >
                         <img
                           src={req.senderId.profileImage || profilePlaceholder}
                           alt={req.senderId.name}
@@ -132,14 +147,25 @@ const Requests = () => {
 
                 <div className="mb-2 mt-4">
                   <h3 className="mb-1">Sent</h3>
-                  <p className="text-sm text-muted">Requests you have already sent.</p>
+                  <p className="text-sm text-muted">People you have reached out to.</p>
                 </div>
                 {sentRequests.length === 0 ? (
-                  <div className="card text-center text-muted p-4">No sent requests</div>
+                  <div className="card text-center text-muted p-4">No sent requests.</div>
                 ) : (
                   sentRequests.map(req => (
                     <div key={req._id} className="card request-row">
-                      <div className="flex gap-2 items-center">
+                      <div
+                        className="flex gap-2 items-center profile-preview-trigger"
+                        onClick={() => openProfile(req.receiverId.userId)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            openProfile(req.receiverId.userId);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                      >
                         <img
                           src={req.receiverId.profileImage || profilePlaceholder}
                           alt={req.receiverId.name}
@@ -161,20 +187,33 @@ const Requests = () => {
           <div className="grid">
             {connections.length === 0 ? (
               <div className="card text-center text-muted p-4" style={{ gridColumn: '1 / -1' }}>
-                No accepted connections yet
+                No connections yet.
               </div>
             ) : (
               connections.map(conn => {
                 const otherPerson = conn.senderId._id === user._id ? conn.receiverId : conn.senderId;
                 return (
                 <div key={conn._id} className="card text-center flex-col items-center gap-1">
-                  <img
-                    src={otherPerson.profileImage || profilePlaceholder}
-                    alt={otherPerson.name}
-                    style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', margin: '0 auto 0.5rem', display: 'block' }}
-                  />
-                  <h3 style={{ margin: 0 }}>{otherPerson.name}</h3>
-                  <p className="text-sm text-muted mb-2" style={{ margin: 0 }}>{otherPerson.userId}</p>
+                  <div
+                    className="profile-preview-trigger"
+                    onClick={() => openProfile(otherPerson.userId)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openProfile(otherPerson.userId);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <img
+                      src={otherPerson.profileImage || profilePlaceholder}
+                      alt={otherPerson.name}
+                      style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', margin: '0 auto 0.5rem', display: 'block' }}
+                    />
+                    <h3 style={{ margin: 0 }}>{otherPerson.name}</h3>
+                    <p className="text-sm text-muted mb-2" style={{ margin: 0 }}>{otherPerson.userId}</p>
+                  </div>
                   <button 
                     className="btn secondary" 
                     style={{ width: '100%' }}

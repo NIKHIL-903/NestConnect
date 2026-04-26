@@ -40,6 +40,7 @@ export const getOrganization = (orgCode) => api.get(`/org/${orgCode}`);
 export const getDiscoverUsers = (domain, type, page, limit) => 
   api.get('/discover', { params: { domain, type, page, limit } });
 export const getUserProfile = (userId) => api.get(`/users/${userId}`);
+export const getPopularUsers = () => api.get('/users/popular');
 export const checkUserId = (userId) => api.get(`/users/check-userid/${userId}`);
 export const updateProfile = (data) => api.patch('/users/profile', data);
 
