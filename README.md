@@ -7,12 +7,12 @@ A hyperlocal networking platform for people in the same organization — apartme
 ## What it does
 
 - Register your organization and invite members with an org code
-- Pick your domains and skills — the app ranks relevant peers and mentors by 
+- Pick your domains and skills — the app ranks relevant peers and mentors by overall score considering skills overlap, profile completeness, profile engagement
 - Send connection requests, accept or reject them
 - Chat in real time with accepted connections
 
 ---
-**Live** - https://nest-connect.vercel.app/auth
+**Live** - https://nestconnect-six.vercel.app/discover
 
 ---
 ## Tech Stack
@@ -21,7 +21,7 @@ A hyperlocal networking platform for people in the same organization — apartme
 **Backend** — Node.js, Express, MongoDB, Mongoose  
 **Auth** — JWT (access token in memory, refresh token in localStorage)  
 **Media** — Cloudinary + Multer  
-**Real-time** — Socket.IO  
+**Real-time Chat** — Socket.IO  
 
 ---
 
@@ -88,12 +88,19 @@ npm run dev
 
 ```
 backend/
-├── controllers/
-├── models/
-├── routes/
-├── middleware/
-├── sockets/
-└── utils/
+├── src/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   ├── sockets/
+│   ├── utils/
+│   ├── config/
+│   ├── app.js
+│   └── index.js
+│
+├── package.json
+└── .env
 
 frontend/
 ├── src/
@@ -101,7 +108,13 @@ frontend/
 │   ├── components/
 │   ├── context/
 │   ├── api/
-│   └── socket/
+│   ├── socket/
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── public/
+├── package.json
+
 ```
 
 ---
