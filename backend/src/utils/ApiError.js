@@ -1,6 +1,4 @@
-/**
- * Standard API error handling class
- */
+// standard error handling api 
 class ApiError extends Error {
     constructor(
         statusCode,

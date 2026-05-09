@@ -7,7 +7,7 @@ A hyperlocal networking platform for people in the same organization — apartme
 ## What it does
 
 - Register your organization and invite members with an org code
-- Pick your domains and skills — the app ranks relevant peers and mentors by skill overlap
+- Pick your domains and skills — the app ranks relevant peers and mentors by 
 - Send connection requests, accept or reject them
 - Chat in real time with accepted connections
 

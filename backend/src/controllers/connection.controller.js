@@ -4,8 +4,8 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { User } from '../models/user.model.js';
 import { Connection } from '../models/connection.model.js';
 
-/**
- * Send a connection request
+/*
+  Send connection request
  */
 export const sendConnectionRequest = asyncHandler(async (req, res) => {
 
@@ -55,8 +55,9 @@ export const sendConnectionRequest = asyncHandler(async (req, res) => {
         new ApiResponse(201, connection, "Connection request sent successfully")
     );
 });
-/**
- * Get accepted connections
+
+/*
+ Get accepted connections
  */
 export const getConnections = asyncHandler(async (req, res) => {
     const connections = await Connection.find({
@@ -69,8 +70,8 @@ export const getConnections = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Get all pending connection requests for user
+/*
+  Get all pending connection requests for user
  */
 export const getConnectionRequests = asyncHandler(async (req, res) => {
     const requests = await Connection.find({
@@ -85,8 +86,8 @@ export const getConnectionRequests = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Accept connection request
+/*
+  Accept connection request
  */
 export const acceptConnection = asyncHandler(async (req, res) => {
 
@@ -117,8 +118,8 @@ export const acceptConnection = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Reject connection request
+/*
+Reject connection request
  */
 export const rejectConnection = asyncHandler(async (req, res) => {
 
@@ -149,8 +150,8 @@ export const rejectConnection = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Remove connection
+/*
+ Remove connection
  */
 export const removeConnection = asyncHandler(async (req, res) => {
 

@@ -4,15 +4,15 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { Organization } from '../models/organization.model.js';
 import crypto from 'crypto';
 
-/**
- * Generate a random 6 character alphanumeric code
+/*
+ Generate a random 6 character alphanumeric code
  */
 const generateOrgCode = () => {
     return crypto.randomBytes(3).toString('hex').toUpperCase();
 };
 
-/**
- * Create a new organization
+/*
+  Create a new organization
  */
 export const createOrganization = asyncHandler(async (req, res) => {
     const { orgName, city, description } = req.body;
@@ -44,8 +44,8 @@ export const createOrganization = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Get organization by code
+/*
+ Get organization by code
  */
 export const getOrganization = asyncHandler(async (req, res) => {
     const { orgCode } = req.params;
@@ -61,8 +61,8 @@ export const getOrganization = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Update organization
+/*
+ Update organization
  */
 export const updateOrganization = asyncHandler(async (req, res) => {
     const { orgCode } = req.params;
@@ -89,8 +89,8 @@ export const updateOrganization = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Check if organization code exists
+/*
+ Check if organization code exists
  */
 export const checkOrgCode = asyncHandler(async (req, res) => {
     const { orgCode } = req.params;

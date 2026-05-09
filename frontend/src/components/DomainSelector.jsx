@@ -1,4 +1,4 @@
-// Reusable dropdown for selecting domains
+//dropdown for selecting domains
 import React from 'react';
 
 const DomainSelector = ({ selectedDomains, onChange, multiple = true }) => {

@@ -1,10 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-/**
- * Creates a JWT access token for a user
- * @param {string} userId - The user's ID
- * @returns {string} The signed JWT access token
- */
+// for creating tokens
 const generateAccessToken = (userId) => {
     return jwt.sign(
         { _id: userId },
@@ -13,11 +9,7 @@ const generateAccessToken = (userId) => {
     );
 };
 
-/**
- * Creates a JWT refresh token for a user
- * @param {string} userId - The user's ID
- * @returns {string} The signed JWT refresh token
- */
+
 const generateRefreshToken = (userId) => {
     return jwt.sign(
         { _id: userId },

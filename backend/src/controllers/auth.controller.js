@@ -6,9 +6,8 @@ import { generateAccessToken, generateRefreshToken } from '../utils/token.utils.
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import jwt from 'jsonwebtoken';
 
-/**
- * Register a new user
- */
+
+// registering a new user
 const registerUser = asyncHandler(async (req, res) => {
     // Extract fields from request
     const {
@@ -25,7 +24,7 @@ const registerUser = asyncHandler(async (req, res) => {
         occupation
     } = req.body;
 
-    // Parse JSON strings from multipart/form-data
+    // for parsed domains and mentor domains
     let domains_parsed = [];
     let mentorDomains_parsed = [];
     let isOpenToMentor = req.body.openToMentor === "true"; // Parse string boolean
@@ -34,15 +33,15 @@ const registerUser = asyncHandler(async (req, res) => {
         try {
             domains_parsed = JSON.parse(req.body.domains);
         } catch {
-            throw new ApiError(400, "Invalid format for domains");
+            throw new ApiError(400, "Invalid format of domains");
         }
     }
 
-    if (req.body.mentorDomains) {
+    if (req.body.mentorDomains) { 
         try {
             mentorDomains_parsed = JSON.parse(req.body.mentorDomains);
         } catch {
-            throw new ApiError(400, "Invalid format for mentorDomains");
+            throw new ApiError(400, "Invalid format of mentorDomains");
         }
     }
 
@@ -67,12 +66,12 @@ const registerUser = asyncHandler(async (req, res) => {
         mentorDomains_parsed = []; // Clear it just in case
     }
 
-    // Validate required fields
+    //  required fields
     if (!name || !email || !password || !userId || !orgCode || !doorNo || !block) {
         throw new ApiError(400, "All required fields must be provided");
     }
 
-    // Checking organization code validity
+    // Checking organization code 
     const { Organization } = await import('../models/organization.model.js');
     const isValidOrg = await Organization.findOne({ orgCode });
     if (!isValidOrg) {
@@ -84,13 +83,13 @@ const registerUser = asyncHandler(async (req, res) => {
     if (existedUserByEmail) {
         throw new ApiError(409, "User with email already exists");
     }
-
+    // chrcking userid
     const existedUserByUserId = await User.findOne({ userId });
     if (existedUserByUserId) {
         throw new ApiError(409, "User with userId already exists");
     }
 
-    // Handle profile image upload (optional)
+    // Handle profile image upload (not mandatory)
     let profileImageLocalPath = req.file?.path;
     let profileImage = "";
     if (profileImageLocalPath) {
@@ -119,7 +118,7 @@ const registerUser = asyncHandler(async (req, res) => {
         profileImage: profileImage
     });
 
-    // Generate access token and refresh token
+    // Generating accesstoken and refreshtoken
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
@@ -145,9 +144,8 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Login user and return tokens
- */
+
+// logging user and return tokens
 const loginUser = asyncHandler(async (req, res) => {
     const { identifier, email, password } = req.body;
     const normalizedIdentifier = (identifier || email || "").trim().toLowerCase();
@@ -190,8 +188,8 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Refresh access token
+/*
+ Refresh access token
  */
 const refreshAccessToken = asyncHandler(async (req, res) => {
     // Receive refresh token
@@ -258,8 +256,8 @@ const logoutUser = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Get current authenticated user
+/*
+  Get current authenticated user
  */
 const getMe = asyncHandler(async (req, res) => {
     return res.status(200).json(

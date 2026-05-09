@@ -5,7 +5,7 @@ import { createServer } from "http"; //for socket.IO
 import { Server } from "socket.io";
 import { initChatSocket } from "./sockets/chat.socket.js";
 
-dotenv.config(); // reads and loads .env variables into process.env
+dotenv.config(); // for loading env variables
 
 const PORT = process.env.PORT || 8000;
 
@@ -29,12 +29,12 @@ async function startServer() {
         initChatSocket(io);
 
         // Start server
-        httpServer.listen(PORT, () => { // listening for requests
+        httpServer.listen(PORT, () => {
             console.log(`Server running at port ${PORT}`);
         });
     } catch (error) {
         console.error("MongoDB connection failed:", error);
-        process.exit(1); // stops the server
+        process.exit(1); 
     }
 }
 

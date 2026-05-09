@@ -1,15 +1,38 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import UserCard from '../components/UserCard';
 import DomainSelector from '../components/DomainSelector';
 import { getDiscoverUsers, getPopularUsers } from '../api/api';
 
+
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('peers'); // peers or learners
-  const [selectedDomain, setSelectedDomain] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') === 'learners' ? 'learners' : 'peers';
+  const [activeTab, setActiveTab] = useState(initialTab); // peers or learners
+  const [selectedDomain, setSelectedDomain] = useState(searchParams.get('domain') || '');
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [popularUsers, setPopularUsers] = useState([]);
   const [popularLoading, setPopularLoading] = useState(true);
+
+  useEffect(() => {
+    const nextTab = searchParams.get('tab') === 'learners' ? 'learners' : 'peers';
+    const nextDomain = searchParams.get('domain') || '';
+
+    setActiveTab(nextTab);
+    setSelectedDomain(nextDomain);
+  }, [searchParams]);
+
+  const updateDiscoverFilters = (nextValues) => {
+    const nextTab = nextValues.activeTab ?? activeTab;
+    const nextDomain = nextValues.selectedDomain ?? selectedDomain;
+    const params = new URLSearchParams();
+
+    if (nextDomain) params.set('domain', nextDomain);
+    if (nextTab !== 'peers') params.set('tab', nextTab);
+
+    setSearchParams(params, { replace: true });
+  };
 
   const fetchUsers = useCallback(async () => {
     if (!selectedDomain) return setUsers([]);
@@ -50,20 +73,20 @@ const Dashboard = () => {
   return (
     <div className="dashboard-wrapper">
       <div className="header mb-4">
-        <h1>People nearby</h1>
+        <h1>{selectedDomain ? `Discover People in ${selectedDomain}` : 'Discover People'}</h1>
         <p>Find people in your organization by interest or skill.</p>
       </div>
 
       <div className="tabs">
         <div 
           className={`tab ${activeTab === 'peers' ? 'active' : ''}`}
-          onClick={() => setActiveTab('peers')}
+          onClick={() => updateDiscoverFilters({ activeTab: 'peers' })}
         >
           Find peers
         </div>
         <div 
           className={`tab ${activeTab === 'learners' ? 'active' : ''}`}
-          onClick={() => setActiveTab('learners')}
+          onClick={() => updateDiscoverFilters({ activeTab: 'learners' })}
         >
           Find mentors
         </div>
@@ -74,7 +97,7 @@ const Dashboard = () => {
           <DomainSelector 
             multiple={false} 
             selectedDomains={selectedDomain ? [selectedDomain] : []}
-            onChange={(domain) => setSelectedDomain(domain)} 
+            onChange={(domain) => updateDiscoverFilters({ selectedDomain: domain })} 
           />
         </div>
         <p className="text-sm text-muted mb-1" style={{ flex: 1 }}>
@@ -90,18 +113,15 @@ const Dashboard = () => {
             <UserCard key={user._id || user.userId} user={user} />
           ))}
         </div>
-      ) : (
+      ) : selectedDomain ? (
         <div className="text-center p-4 card text-muted">
-          {selectedDomain 
-            ? `No ${activeTab === 'peers' ? 'peers' : 'mentors'} found for ${selectedDomain}.`
-            : "Choose a domain when you are ready."}
+          {`No ${activeTab === 'peers' ? 'peers' : 'mentors'} found for ${selectedDomain}.`}
         </div>
-      )}
+      ) : null}
 
       <div className="mt-4">
         <div className="header mb-2">
-          <h1 style={{ fontSize: '1.35rem', marginBottom: '0.25rem' }}>Recently viewed people</h1>
-          <p>Profiles your community has been checking out.</p>
+          <h1 style={{ fontSize: '1.35rem', marginBottom: '0.25rem' }}>Most Viewed People in your Community</h1>
         </div>
 
         {popularLoading ? (

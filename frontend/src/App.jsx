@@ -28,10 +28,12 @@ const AppContent = () => {
           <Route path="/register" element={<Register />} />
           
           <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Navigate to="/discover" replace />} />
+            <Route path="/discover" element={<Dashboard />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/update-profile" element={<UpdateProfile />} />
-            <Route path="/requests" element={<Requests />} />
+            <Route path="/requests" element={<Navigate to="/connections" replace />} />
+            <Route path="/connections" element={<Requests />} />
             <Route path="/message/:id" element={<Message />} />
           </Route>
         </Routes>

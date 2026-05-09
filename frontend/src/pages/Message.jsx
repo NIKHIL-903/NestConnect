@@ -95,7 +95,7 @@ const Message = () => {
     if (!window.confirm(`Remove connection with ${contactName}?`)) return;
     try {
       await removeConnection(contactUserId);
-      navigate('/requests');
+      navigate('/connections');
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || 'Failed to remove connection');
@@ -124,7 +124,7 @@ const Message = () => {
         {/* Header */}
         <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button 
-            onClick={() => navigate('/requests')}
+            onClick={() => navigate('/connections')}
             style={{ background: 'none', border: 'none', color: 'var(--text-color)', cursor: 'pointer', fontSize: '0.95rem' }}
           >
             Back

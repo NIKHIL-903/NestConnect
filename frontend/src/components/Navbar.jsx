@@ -15,61 +15,26 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/dashboard">NestConnect</Link>
+        <Link to="/discover"><h3>NestConnect</h3></Link>
         {user?.org?.orgName && (
-          <span className="navbar-org-name">{user.org.orgName}</span>
+          <h3 className="navbar-org-name">{user.org.orgName}</h3>
         )}
       </div>
       <div className="nav-links">
-        <Link to="/dashboard" className={isActive('/dashboard')}>People</Link>
-        <Link to="/profile/me" className={isActive('/profile/me')}>Profile</Link>
-        <Link to="/requests" className={isActive('/requests')}>Connections</Link>
+        <Link to="/discover" className={isActive('/discover')}><h3>Discover</h3></Link>
+        <Link to="/profile/me" className={isActive('/profile/me')}><h3>Profile</h3></Link>
+        <Link to="/connections" className={isActive('/connections')}><h3>Connections</h3></Link>
       </div>
       <div className="nav-actions">
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-end'
-          }}
-        >
-          {user?.userId && (
-            <span
-              style={{
-                color: 'var(--text-muted)',
-                fontSize: '0.95rem',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              @{user.userId}
-            </span>
-          )}
-        </div>
+        {user?.userId && (
+          <span className="navbar-user-id">@{user.userId}</span>
+        )}
         <button 
           onClick={async () => {
             await logout();
             navigate('/auth');
           }}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-color)',
-            fontSize: '1rem',
-            opacity: 0.8,
-            transition: 'opacity 0.2s, color 0.2s',
-            padding: 0
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.opacity = '1';
-            e.target.style.color = 'var(--primary-accent)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.opacity = '0.8';
-            e.target.style.color = 'var(--text-color)';
-          }}
+          className="navbar-logout"
         >
           Logout
         </button>

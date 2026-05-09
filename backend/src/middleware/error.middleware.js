@@ -1,9 +1,9 @@
 import { ApiError } from '../utils/ApiError.js';
 
-/**
- * Global error handler middleware
- * Returns structured error responses using ApiError
- */
+
+//  Global error handler middleware
+//  Returns structured error responses using ApiError
+ 
 export const errorHandler = (err, req, res, next) => {
     let error = err;
 

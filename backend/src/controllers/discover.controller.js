@@ -88,10 +88,10 @@ const buildRelevance = ({ user, currentUserSkillsMap, otherSkills, type, domain 
     };
 };
 
-/**
- * Discover mentors or peers inside the current user's organization.
- * Relevance is based on domain fit, normalized skill overlap, mentor intent,
- * profile completeness, and a small visitor-count tie breaker.
+/*
+  Discover mentors or peers inside the current user's organization.
+  Relevance is based on domain fit, normalized skill overlap, mentor intent,
+  profile completeness, and a small visitor-count tie breaker.
  */
 export const discoverUsers = asyncHandler(async (req, res) => {
     const { type = "peer", domain, page = 1, limit = 10 } = req.query;

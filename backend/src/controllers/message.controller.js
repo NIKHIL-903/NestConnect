@@ -4,8 +4,8 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { Message } from '../models/message.model.js';
 import { Connection } from '../models/connection.model.js';
 
-/**
- * Get chat history for a connection
+/*
+Get chat history for a connection
  */
 export const getChatHistory = asyncHandler(async (req, res) => {
     const { connectionId } = req.params;

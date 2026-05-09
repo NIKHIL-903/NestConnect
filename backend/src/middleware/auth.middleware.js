@@ -3,8 +3,8 @@ import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { User } from '../models/user.model.js';
 
-/**
- * Verifies JWT access token and attaches decoded user to request object
+/*
+Verifies JWT access token and attaches decoded user to request object
  */
 export const verifyJWT = asyncHandler(async (req, res, next) => {
     try {

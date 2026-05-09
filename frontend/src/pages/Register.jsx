@@ -18,6 +18,7 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     bio: '',
     occupation: '',
     block: '',
@@ -42,6 +43,16 @@ const Register = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const passwordRules = [
+    { label: 'At least 1 uppercase letter', isValid: /[A-Z]/.test(formData.password) },
+    { label: 'At least 1 lowercase letter', isValid: /[a-z]/.test(formData.password) },
+    { label: 'At least 1 number', isValid: /\d/.test(formData.password) },
+    { label: 'At least 1 special character', isValid: /[^A-Za-z0-9]/.test(formData.password) }
+  ];
+  const missingPasswordRules = passwordRules.filter(rule => !rule.isValid);
+  const isPasswordValid = passwordRules.every(rule => rule.isValid);
+  const passwordsMatch = formData.password && formData.password === formData.confirmPassword;
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -119,6 +130,14 @@ const Register = () => {
       alert('Please check your organization code first');
       return;
     }
+    if (!isPasswordValid) {
+      alert('Password must include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character');
+      return;
+    }
+    if (!passwordsMatch) {
+      alert('Passwords do not match');
+      return;
+    }
     setIsSubmitting(true);
     
     // Format domains and mentorDomains to match backend expectation
@@ -136,6 +155,7 @@ const Register = () => {
       // Use FormData since backend expects multipart/form-data for profileImage
       const formDataToSend = new FormData();
       Object.keys(formData).forEach(key => {
+        if (key === 'confirmPassword') return;
         formDataToSend.append(key, formData[key]);
       });
       
@@ -153,7 +173,7 @@ const Register = () => {
 
       console.log('Registering user');
       await register(formDataToSend);
-      navigate('/dashboard');
+      navigate('/discover');
     } catch (err) {
       setIsSubmitting(false);
       console.error(err);
@@ -306,6 +326,45 @@ const Register = () => {
                 className="input-field" 
                 required 
               />
+              {formData.password && missingPasswordRules.length > 0 && (
+                <div className="text-sm" style={{ marginTop: '-0.75rem', marginBottom: '1rem', textAlign: 'left' }}>
+                  <p style={{ color: '#f87171', margin: '0 0 0.25rem' }}>Password needs:</p>
+                  {missingPasswordRules.map(rule => (
+                    <p
+                      key={rule.label}
+                      style={{
+                        color: 'var(--text-muted)',
+                        margin: '0.15rem 0'
+                      }}
+                    >
+                      - {rule.label}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div>
+              <label className="text-sm text-muted">Confirm password</label>
+              <input 
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                className="input-field" 
+                required 
+              />
+              {formData.confirmPassword && (
+                <p
+                  className="text-sm"
+                  style={{
+                    color: passwordsMatch ? '#4ade80' : '#f87171',
+                    margin: '-0.75rem 0 1rem',
+                    textAlign: 'left'
+                  }}
+                >
+                  {passwordsMatch ? 'Passwords match' : 'Passwords do not match'}
+                </p>
+              )}
             </div>
             <div>
               <label className="text-sm text-muted">Occupation</label>

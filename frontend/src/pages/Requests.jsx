@@ -58,7 +58,7 @@ const Requests = () => {
   };
 
   const openProfile = (profileUserId) => {
-    navigate(`/profile/${profileUserId}?source=requests`);
+    navigate(`/profile/${profileUserId}?source=connections`);
   };
 
   return (

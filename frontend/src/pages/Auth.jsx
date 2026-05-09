@@ -21,7 +21,7 @@ const Auth = () => {
     e.preventDefault();
     try {
       await login({ identifier, password });
-      navigate('/dashboard');
+      navigate('/discover');
     } catch (err) {
       console.error(err);
       alert('Login failed');
@@ -60,7 +60,7 @@ const Auth = () => {
             NestConnect
           </h1>
           <p className="text-muted" style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>
-            Meet the people who live, study, or work around you.
+            Meet mentors and peers within your Community
           </p>
           <h2 style={{ fontSize: '1.4rem', fontWeight: '500', color: 'var(--text-color)' }}>
             {isLogin ? 'Welcome back' : 'Join your community'}
@@ -116,12 +116,12 @@ const Auth = () => {
           <form onSubmit={handleNewUser} className="flex-col gap-2">
             <div>
               <p className="text-sm text-muted mb-2 text-center">
-                Enter the organization code shared by your community.
+                Enter the organization code of your community
               </p>
               <input 
                 className="input-field" 
                 type="text" 
-                placeholder="Organization code"
+                placeholder="Code"
                 style={{ padding: '0.8rem', borderColor: orgCodeError ? '#f87171' : undefined }}
                 value={orgCode}
                 onChange={(e) => {
@@ -137,10 +137,10 @@ const Auth = () => {
             </button>
             <div className="mt-4 text-center">
               <p className="text-sm text-muted mb-1">
-                Starting a new community?
+                 Want to Register your Community?
               </p>
               <Link to="/register-org" style={{ color: 'var(--primary-accent)' }}>
-                Create an organization
+                Register Your Community
               </Link>
             </div>
           </form>

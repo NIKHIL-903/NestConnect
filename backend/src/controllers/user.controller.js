@@ -5,8 +5,8 @@ import { User } from '../models/user.model.js';
 import { Connection } from '../models/connection.model.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
-/**
- * Get current user profile
+/*
+ Get current user profile
  */
 export const getUserProfile = asyncHandler(async (req, res) => {
     const user = req.user;
@@ -16,8 +16,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Update current user profile
+/*
+ Update current user profile
  */
 export const updateUserProfile = asyncHandler(async (req, res) => {
     const { 
@@ -117,9 +117,9 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Fetch another user's profile using userId
- */
+
+ // Fetch another user's profile using userId
+ 
 export const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
     const { source } = req.query;
@@ -172,9 +172,7 @@ export const getUserById = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Get top visited users in the same organization
- */
+// Get top visited users in the same organization
 export const getPopularUsers = asyncHandler(async (req, res) => {
     const users = await User.find({
         orgCode: req.user.orgCode,
@@ -189,9 +187,9 @@ export const getPopularUsers = asyncHandler(async (req, res) => {
     );
 });
 
-/**
- * Check if a userId is already taken
- */
+
+//  Check if a userId is already taken
+
 export const checkUserId = asyncHandler(async (req, res) => {
     const { userId } = req.params;
 

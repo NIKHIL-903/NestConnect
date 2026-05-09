@@ -29,15 +29,14 @@ const RegisterOrg = () => {
   return (
     <div className="page-wrapper">
       <div className="card p-4">
-        <h2 className="text-center mb-1">Create an organization</h2>
-        <p className="text-center text-muted mb-4">Make a private space for your community.</p>
+        <h2 className="text-center mb-1">Register Your Community</h2>
 
         {!generatedCode ? (
           <form onSubmit={handleSubmit}>
             <input 
               className="input-field" 
               type="text" 
-              placeholder="Organization name"
+              placeholder="Community name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -52,7 +51,7 @@ const RegisterOrg = () => {
             />
             <textarea
               className="input-field"
-              placeholder="A short note about this community"
+              placeholder="A short note about the community"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows="3"
