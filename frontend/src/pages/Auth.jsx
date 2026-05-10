@@ -52,26 +52,61 @@ const Auth = () => {
     }
   };
 
+  const features = [
+    {
+      title: 'Discover People with similar interests',
+      text: 'Meet neighbours with skills and hobbies like yours.'
+    },
+    {
+      title: 'Find mentors nearby',
+      text: 'Learn from people already in your community.'
+    },
+    ,
+    {
+      title: 'Connect with people within your community',
+      text: 'Start trusted conversations with familiar people.'
+    }
+  ];
+
   return (
-    <div className="page-wrapper" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="card p-4" style={{ width: '100%', maxWidth: '500px' }}>
-        <div className="text-center mb-4">
-          <h1 style={{ color: 'var(--primary-accent)', fontSize: '2.2rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            NestConnect
-          </h1>
-          <p className="text-muted" style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>
+    <div className="auth-page">
+      <section className="auth-intro" aria-labelledby="auth-title">
+        <div>
+          <h1 id="auth-title">NestConnect</h1>
+          <p className="auth-subtitle">
             Meet mentors and peers within your Community
           </p>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: '500', color: 'var(--text-color)' }}>
-            {isLogin ? 'Welcome back' : 'Join your community'}
-          </h2>
+          <Link to="/register-org" className="auth-community-link">
+            Register Your Community
+          </Link>
         </div>
-        
-        <div className="flex justify-center gap-2 mb-4">
+
+        <div className="auth-feature-grid">
+          {features.map(feature => (
+            <article className="auth-feature-card" key={feature.title}>
+              <div>
+                <h2>{feature.title}</h2>
+                <p>{feature.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="card auth-card" aria-label={isLogin ? 'Login form' : 'Join community form'}>
+        <div className="auth-card-heading">
+          <h2>{isLogin ? 'Welcome back' : 'New here'}</h2>
+          <p className="text-muted">
+            {isLogin
+              ? 'Login to continue discovering people around you.'
+              : 'Join your community using your community code.'}
+          </p>
+        </div>
+
+        <div className="auth-tabs" role="tablist" aria-label="Authentication options">
           <button 
             className={`btn ${isLogin ? '' : 'secondary'}`} 
             onClick={() => setIsLogin(true)}
-            style={{ width: 'auto', padding: '0.5rem 1.5rem' }}
             type="button"
           >
             Login
@@ -79,7 +114,6 @@ const Auth = () => {
           <button 
             className={`btn ${!isLogin ? '' : 'secondary'}`} 
             onClick={() => setIsLogin(false)}
-            style={{ width: 'auto', padding: '0.5rem 1.5rem' }}
             type="button"
           >
             New here
@@ -87,42 +121,52 @@ const Auth = () => {
         </div>
 
         {isLogin ? (
-          <form onSubmit={handleLogin} className="flex-col gap-2">
+          <>
+          <form onSubmit={handleLogin} className="auth-form">
             <div>
+              <label className="auth-label" htmlFor="login-identifier">Email or username</label>
               <input 
+                id="login-identifier"
                 className="input-field" 
                 type="text" 
                 placeholder="Email or username" 
-                style={{ padding: '0.8rem' }}
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 required
               />
             </div>
             <div>
+              <label className="auth-label" htmlFor="login-password">Password</label>
               <input 
+                id="login-password"
                 className="input-field" 
                 type="password" 
                 placeholder="Password"
-                style={{ padding: '0.8rem' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            <button className="btn mt-2" type="submit" style={{ padding: '0.8rem' }}>Login</button>
+            <button className="btn auth-submit" type="submit">Login</button>
           </form>
+          <p className="auth-demo-text">
+            To test this application use 
+            <br></br>
+            username: <strong>test</strong>
+            <br />
+            password: <strong>Test@123</strong>
+          </p>
+          </>
         ) : (
-          <form onSubmit={handleNewUser} className="flex-col gap-2">
+          <form onSubmit={handleNewUser} className="auth-form">
             <div>
-              <p className="text-sm text-muted mb-2 text-center">
-                Enter the organization code of your community
-              </p>
+              <label className="auth-label" htmlFor="org-code">Community code</label>
               <input 
+                id="org-code"
                 className="input-field" 
                 type="text" 
                 placeholder="Code"
-                style={{ padding: '0.8rem', borderColor: orgCodeError ? '#f87171' : undefined }}
+                style={{ borderColor: orgCodeError ? '#f87171' : undefined }}
                 value={orgCode}
                 onChange={(e) => {
                    setOrgCode(e.target.value);
@@ -132,20 +176,12 @@ const Auth = () => {
               />
               {orgCodeError && <p className="text-sm mt-1 text-center" style={{ color: '#f87171', margin: '0' }}>{orgCodeError}</p>}
             </div>
-            <button className="btn mt-2" type="submit" disabled={isCheckingOrg} style={{ padding: '0.8rem' }}>
+            <button className="btn auth-submit" type="submit" disabled={isCheckingOrg}>
                {isCheckingOrg ? 'Checking...' : 'Continue'}
             </button>
-            <div className="mt-4 text-center">
-              <p className="text-sm text-muted mb-1">
-                 Want to Register your Community?
-              </p>
-              <Link to="/register-org" style={{ color: 'var(--primary-accent)' }}>
-                Register Your Community
-              </Link>
-            </div>
           </form>
         )}
-      </div>
+      </section>
     </div>
   );
 };

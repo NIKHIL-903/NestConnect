@@ -3,8 +3,18 @@ import React from 'react';
 
 const DomainSelector = ({ selectedDomains, onChange, multiple = true }) => {
   const domains = [
-    'Technology', 'Finance', 'Sports', 'Music', 
-    'Art', 'Fitness', 'Business'
+    'Engineering & Technology',
+    'Creative Arts',
+    'Music & Dance',
+    'Sports & Fitness',
+    'Health & Wellness',
+    'Food & Cooking',
+    'Lifestyle & Hobbies',
+    'Business & Entrepreneurship',
+    'Education & Learning',
+    'Media & Content Creation',
+    'Communication & Public Speaking',
+    'Social Impact & Community'
   ];
 
   const handleChange = (e) => {

@@ -9,6 +9,7 @@ import orgRouter from "./routes/org.routes.js";
 import discoverRouter from "./routes/discover.routes.js";
 import connectionRouter from "./routes/connection.routes.js";
 import messageRouter from "./routes/message.routes.js";
+import seededRouter from "./routes/seeded.routes.js";
 
 import { errorHandler } from "./middleware/error.middleware.js";
 
@@ -22,8 +23,12 @@ app.use(cors({
     credentials: true
 }));
 
+// Demo-only seeded utilities. Remove seeded.routes.js, seeded.controller.js,
+// and this mount before production deployment.
+app.use("/", seededRouter);
+
 app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 

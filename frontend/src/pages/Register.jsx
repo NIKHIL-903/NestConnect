@@ -438,6 +438,9 @@ const Register = () => {
 
           <div className="mb-4 mt-4">
             <h3 className="mb-2">Interests</h3>
+            <p className="text-sm text-muted mb-2">
+              Please write full skill names instead of short forms, like Artificial Intelligence instead of AI, Web Development instead of Web Dev, and Public Speaking instead of PS.
+            </p>
             <DomainSelector 
               selectedDomains={selectedDomains} 
               onChange={setSelectedDomains} 
@@ -475,6 +478,9 @@ const Register = () => {
               {openToMentor === 'Yes' && (
                 <div className="mt-4">
                   <p className="text-sm text-muted mb-2">Choose the areas where you can help others.</p>
+                  <p className="text-sm text-muted mb-2">
+                    Use full skill names here too, like Content Creation instead of CC or Community Organizing instead of CO.
+                  </p>
                   <DomainSelector 
                     selectedDomains={mentorSelectedDomains} 
                     onChange={setMentorSelectedDomains} 

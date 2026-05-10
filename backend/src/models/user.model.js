@@ -73,6 +73,10 @@ const userSchema = new Schema(
         },
         refreshToken: {
             type: String
+        },
+        isSeededUser: {
+            type: Boolean,
+            default: false
         }
     },
     { timestamps: true }

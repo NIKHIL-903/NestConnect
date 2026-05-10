@@ -1,9 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import UserCard from '../components/UserCard';
 import DomainSelector from '../components/DomainSelector';
 import { getDiscoverUsers, getPopularUsers } from '../api/api';
 
+const POPULAR_USERS_CACHE_TTL = 60 * 1000;
+const DISCOVER_USERS_CACHE_TTL = 60 * 1000;
+const discoverUsersCache = new Map();
+let popularUsersCache = {
+  users: [],
+  fetchedAt: 0,
+  promise: null
+};
 
 const Dashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,6 +22,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [popularUsers, setPopularUsers] = useState([]);
   const [popularLoading, setPopularLoading] = useState(true);
+  const latestDiscoverRequestRef = useRef('');
 
   useEffect(() => {
     const nextTab = searchParams.get('tab') === 'learners' ? 'learners' : 'peers';
@@ -35,28 +44,116 @@ const Dashboard = () => {
   };
 
   const fetchUsers = useCallback(async () => {
-    if (!selectedDomain) return setUsers([]);
-    setLoading(true);
+    if (!selectedDomain) {
+      latestDiscoverRequestRef.current = '';
+      setUsers([]);
+      setLoading(false);
+      return;
+    }
+
+    const type = activeTab === 'peers' ? 'peer' : 'mentor';
+    const cacheKey = `${type}:${selectedDomain}`;
+    const cachedResult = discoverUsersCache.get(cacheKey);
+    const cacheIsFresh = cachedResult && Date.now() - cachedResult.fetchedAt < DISCOVER_USERS_CACHE_TTL;
+
+    latestDiscoverRequestRef.current = cacheKey;
+
+    if (cachedResult?.users) {
+      setUsers(cachedResult.users);
+      setLoading(false);
+
+      if (cacheIsFresh) return;
+    } else {
+      setLoading(true);
+    }
+
     try {
-      const type = activeTab === 'peers' ? 'peer' : 'mentor';
-      const res = await getDiscoverUsers(selectedDomain, type, 1, 10);
-      setUsers(res.data.data.users);
+      let requestPromise = cachedResult?.promise;
+
+      if (!requestPromise) {
+        requestPromise = getDiscoverUsers(selectedDomain, type, 1, 10)
+          .then(res => {
+            const fetchedUsers = res.data.data.users || [];
+            discoverUsersCache.set(cacheKey, {
+              users: fetchedUsers,
+              fetchedAt: Date.now(),
+              promise: null
+            });
+            return fetchedUsers;
+          })
+          .catch(error => {
+            const currentCache = discoverUsersCache.get(cacheKey);
+            if (currentCache) {
+              discoverUsersCache.set(cacheKey, {
+                ...currentCache,
+                promise: null
+              });
+            }
+            throw error;
+          });
+
+        discoverUsersCache.set(cacheKey, {
+          users: cachedResult?.users || [],
+          fetchedAt: cachedResult?.fetchedAt || 0,
+          promise: requestPromise
+        });
+      }
+
+      const fetchedUsers = await requestPromise;
+
+      if (latestDiscoverRequestRef.current === cacheKey) {
+        setUsers(fetchedUsers);
+      }
     } catch (err) {
       console.error(err);
-      setUsers([]);
+      if (!cachedResult?.users && latestDiscoverRequestRef.current === cacheKey) {
+        setUsers([]);
+      }
     } finally {
-      setLoading(false);
+      if (latestDiscoverRequestRef.current === cacheKey) {
+        setLoading(false);
+      }
     }
   }, [activeTab, selectedDomain]);
 
   const fetchPopularUsers = useCallback(async () => {
-    setPopularLoading(true);
+    const hasCachedUsers = popularUsersCache.users.length > 0;
+    const cacheIsFresh = Date.now() - popularUsersCache.fetchedAt < POPULAR_USERS_CACHE_TTL;
+
+    if (hasCachedUsers) {
+      setPopularUsers(popularUsersCache.users);
+      setPopularLoading(false);
+
+      if (cacheIsFresh) return;
+    } else {
+      setPopularLoading(true);
+    }
+
     try {
-      const res = await getPopularUsers();
-      setPopularUsers(res.data.data || []);
+      if (!popularUsersCache.promise) {
+        popularUsersCache.promise = getPopularUsers()
+          .then(res => {
+            const users = res.data.data || [];
+            popularUsersCache = {
+              users,
+              fetchedAt: Date.now(),
+              promise: null
+            };
+            return users;
+          })
+          .catch(error => {
+            popularUsersCache.promise = null;
+            throw error;
+          });
+      }
+
+      const users = await popularUsersCache.promise;
+      setPopularUsers(users);
     } catch (err) {
       console.error(err);
-      setPopularUsers([]);
+      if (!hasCachedUsers) {
+        setPopularUsers([]);
+      }
     } finally {
       setPopularLoading(false);
     }
