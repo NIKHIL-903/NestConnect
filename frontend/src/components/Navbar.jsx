@@ -22,8 +22,8 @@ const Navbar = () => {
       </div>
       <div className="nav-links">
         <Link to="/discover" className={isActive('/discover')}><h3>Discover</h3></Link>
-        <Link to="/profile/me" className={isActive('/profile/me')}><h3>Profile</h3></Link>
-        <Link to="/connections" className={isActive('/connections')}><h3>Connections</h3></Link>
+        <Link to="/profile/me" className={isActive('/profile/me')}><h3>My Profile</h3></Link>
+        <Link to="/connections" className={isActive('/connections')}><h3>Connections and Requests</h3></Link>
       </div>
       <div className="nav-actions">
         {user?.userId && (
