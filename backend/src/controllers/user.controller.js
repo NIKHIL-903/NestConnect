@@ -23,6 +23,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     const { 
         name, bio, achievements, occupation, block, floor, doorNo, userId
     } = req.body;
+    const hasBodyField = (field) => Object.prototype.hasOwnProperty.call(req.body, field);
 
     // ✅ Parse JSON strings from multipart/form-data
     let domains_parsed;
@@ -97,7 +98,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
             $set: {
                 ...(name && { name }),
                 ...(bio && { bio }),
-                ...(achievements && { achievements }),
+                ...(hasBodyField("achievements") && { achievements }),
                 ...(occupation && { occupation }),
                 ...(block && { block }),
                 ...(floor && { floor }),

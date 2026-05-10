@@ -149,7 +149,7 @@ const Message = () => {
                 whiteSpace: 'nowrap'
               }}
             >
-              Remove
+              Remove connection
             </button>
           )}
         </div>
