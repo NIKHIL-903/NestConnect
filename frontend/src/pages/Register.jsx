@@ -213,7 +213,7 @@ const Register = () => {
         <form onSubmit={handleSubmit}>
           
           <div className="flex justify-center mb-4">
-            <label style={{ cursor: 'pointer' }}>
+            <label style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <input 
                 type="file" 
                 accept="image/*" 
@@ -231,6 +231,9 @@ const Register = () => {
                   display: 'block'
                 }}
               />
+              <p className="text-sm text-muted text-center mt-1" style={{ marginBottom: 0 }}>
+                Click on avatar to set Profile Picture
+              </p>
             </label>
           </div>
 
