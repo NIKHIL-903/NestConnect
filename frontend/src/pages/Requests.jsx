@@ -214,15 +214,24 @@ const Requests = () => {
                     <h3 style={{ margin: 0 }}>{otherPerson.name}</h3>
                     <p className="text-sm text-muted mb-2" style={{ margin: 0 }}>{otherPerson.userId}</p>
                   </div>
-                  <button 
-                    className="btn secondary" 
-                    style={{ width: '100%' }}
-                    onClick={() => {
-                      navigate(`/message/${conn._id}`);
-                    }}
-                  >
-                    Message
-                  </button>
+                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <button
+                      className="btn secondary"
+                      style={{ flex: 1 }}
+                      onClick={() => openProfile(otherPerson.userId)}
+                    >
+                      View Profile
+                    </button>
+                    <button 
+                      className="btn secondary" 
+                      style={{ flex: 1 }}
+                      onClick={() => {
+                        navigate(`/message/${conn._id}`);
+                      }}
+                    >
+                      Message
+                    </button>
+                  </div>
                 </div>
               )})
             )}

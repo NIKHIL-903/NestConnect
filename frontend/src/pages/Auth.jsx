@@ -61,7 +61,6 @@ const Auth = () => {
       title: 'Find mentors nearby',
       text: 'Learn from people already in your community.'
     },
-    ,
     {
       title: 'Connect with people within your community',
       text: 'Start trusted conversations with familiar people.'
@@ -175,6 +174,9 @@ const Auth = () => {
                 required
               />
               {orgCodeError && <p className="text-sm mt-1 text-center" style={{ color: '#f87171', margin: '0' }}>{orgCodeError}</p>}
+              <p className="auth-demo-text" style={{ marginTop: '0.75rem', marginBottom: 0 }}>
+                Test Code: <strong>79DC50</strong>
+              </p>
             </div>
             <button className="btn auth-submit" type="submit" disabled={isCheckingOrg}>
                {isCheckingOrg ? 'Checking...' : 'Continue'}

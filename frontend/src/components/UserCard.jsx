@@ -67,7 +67,7 @@ const UserCard = ({ user }) => {
         className="btn secondary mt-2" 
         onClick={openProfile}
       >
-        View profile
+        View Profile
       </button>
     </div>
   );
